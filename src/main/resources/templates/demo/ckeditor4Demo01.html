@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>CJ LearningNotes</title>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <!--favourite icon-->
+    <link rel="shortcut icon" th:href="@{/icon/favicon.ico}"/>
+    <link rel="bookmark" th:href="@{/icon/favicon.ico}"/>
+    <!--公共css-->
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css"
+          rel="stylesheet"
+          th:href="@{/cjThirdStatic/fontawesome-free/css/all.min.css}" type="text/css">
+    <!--bootstrap css-->
+    <link href="vendor/bootstrap/css/bootstrap.css"
+          rel="stylesheet" th:href="@{/cjThirdStatic/bootstrap/css/bootstrap.css}">
+
+    <!--        <link th:href="@{/cjThirdStatic/datatables/datatables.css}" href="vendor/datatables/datatables.css" rel="stylesheet">-->
+
+    <!--下面为bootstrap4风格时使用-->
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css"
+          rel="stylesheet" th:href="@{/cjThirdStatic/datatables/dataTables.bootstrap4.css}">
+    <link href="vendor/datatables/plugins/select/select.dataTables.min.css"
+          rel="stylesheet" th:href="@{/cjThirdStatic/datatables/plugins/select/select.dataTables.min.css}">
+
+
+    <link href="vendor/bootstrap/bootstrap-select/css/bootstrap-select.css"
+          rel="stylesheet" th:href="@{/cjThirdStatic/bootstrap/bootstrap-select/css/bootstrap-select.css}">
+
+    <!--ztree-->
+    <link href="vendor/ztree/css/zTreeStyle/zTreeStyle.css"
+          rel="stylesheet" th:href="@{/cjThirdStatic/ztree/css/zTreeStyle/zTreeStyle.css}">
+    <style type="text/css">
+        /* Minimal styling to add some padding around the editor in this sample */
+        body {
+            padding: 30px;
+        }
+        .container {
+            max-width: 1130px;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Classic editor</h1>
+<button type="button">tt</button>
+<form >
+    ID：<input type="text" name="id" id="article_id">
+    Name:<input type="text" name="name" id="article_name">
+    摘要：<input type="text" name="articleDesc" id="article_desc">
+    <textarea cols="80" id="editor1" name="content" rows="10">
+        This is my textarea to be replaced with CKEditor 4.
+    </textarea>
+
+</form>
+
+<!-- Logout Modal-->
+<!-- Bootstrap core JavaScript-->
+<th:block>
+    <script src="vendor/jquery/jquery.js" th:src="@{/cjThirdStatic/jquery/jquery.js}"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.js"
+            th:src="@{/cjThirdStatic/bootstrap/js/bootstrap.bundle.js}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.js"
+            th:src="@{/cjThirdStatic/jquery-easing/jquery.easing.js}"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js" th:src="@{/cjThirdStatic/chart.js/Chart.min.js}"></script>
+
+
+    <!-- dataTables -->
+    <script src="vendor/datatables/jquery.dataTables.min.js"
+            th:src="@{/cjThirdStatic/datatables/jquery.dataTables.min.js}"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"
+            th:src="@{/cjThirdStatic/datatables/dataTables.bootstrap4.min.js}"></script>
+    <!--select插件-->
+    <script src="vendor/datatables/plugins/select/dataTables.select.min.js"
+            th:src="@{/cjThirdStatic/datatables/plugins/select/dataTables.select.min.js}"></script>
+
+
+    <!--bootstrap select-->
+    <script src="vendor/bootstrap/bootstrap-select/js/bootstrap-select.js"
+            th:src="@{/cjThirdStatic/bootstrap/bootstrap-select/js/bootstrap-select.js}"></script>
+    <script src="vendor/bootstrap/bootstrap-select/js/i18n/defaults-zh_CN.js"
+            th:src="@{/cjThirdStatic/bootstrap/bootstrap-select/js/i18n/defaults-zh_CN.js}"></script>
+
+    <!--ztree-->
+    <script src="vendor/ztree/js/jquery.ztree.all.js" th:src="@{/cjThirdStatic/ztree/js/jquery.ztree.all.js}"></script>
+    <!--ckeditor5--build--classic-->
+    <script src="vendor/ckeditor_all/ckeditor4/ckeditor.js"
+            th:src="@{/cjThirdStatic/ckeditor_all/ckeditor4/ckeditor.js}"></script>
+</th:block>
+<script>
+
+    $(function () {
+      cjCKEditor01 =  CKEDITOR.replace( $("#editor1")[0],{
+            // removePlugins: 'easyimage',
+            // extraPlugins: 'image2,uploadimage',
+
+            // toolbar: [
+            //     { name: 'clipboard', items: [ 'Undo', 'Redo' ] },
+            //     { name: 'styles', items: [ 'Styles', 'Format' ] },
+            //     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Strike', '-', 'RemoveFormat' ] },
+            //     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
+            //     { name: 'links', items: [ 'Link', 'Unlink' ] },
+            //     { name: 'insert', items: [ 'Image', 'Table' ] },
+            //     { name: 'tools', items: [ 'Maximize' ] },
+            //     { name: 'editing', items: [ 'Scayt' ] }
+            // ],
+/*
+            // Upload dropped or pasted file to the CKFinder connector (note that the response type is set to JSON).
+            uploadUrl: '/cjCKEditor/uploader/file',
+            // Upload dropped or pasted images to the CKFinder connector (note that the response type is set to JSON).
+            imageUploadUrl: '/cjCKEditor/uploader/image',
+
+            // filebrowserBrowseUrl: '/cjCKEditor/uploader/file',//需要仔细考虑，应该是查看服务器文件的连接
+            filebrowserUploadUrl: '/cjCKEditor/uploader/file',*/
+
+
+            // Simplify the Image and Link dialog windows. The "Advanced" tab is not needed in most cases.
+            // removeDialogTabs: 'image:advanced;link:advanced',
+
+        });
+
+        $("button").on("click",function () {
+            console.log( CKEDITOR.instances.editor1.getData());
+        })
+    })
+
+
+
+</script>
+</body>
+
+</html>

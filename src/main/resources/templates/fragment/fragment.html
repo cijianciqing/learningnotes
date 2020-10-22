@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>CJ LearningNotes</title>
+    <th:block th:fragment="cjLearning_head">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!--favourite icon-->
+        <link rel="shortcut icon" th:href="@{/icon/favicon.ico}"/>
+        <link rel="bookmark" th:href="@{/icon/favicon.ico}"/>
+        <!--公共css-->
+        <!-- Custom fonts for this template-->
+        <link th:href="@{/cjThirdStatic/fontawesome-free/css/all.min.css}"
+              href="vendor/fontawesome-free/css/all.min.css"
+              rel="stylesheet" type="text/css">
+
+        <!--bootstrap css-->
+        <link th:href="@{/cjThirdStatic/bootstrap/css/bootstrap.css}"
+              href="vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <!--dataTable--默认 css-->
+<!--        <link th:href="@{/cjThirdStatic/datatables/datatables.css}"-->
+<!--              href="vendor/datatables/datatables.css" rel="stylesheet">-->
+        <!--下面为bootstrap4风格时使用-->
+        <link th:href="@{/cjThirdStatic/datatables/dataTables.bootstrap4.css}"
+              href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+
+
+        <link th:href="@{/cjThirdStatic/datatables/plugins/select/select.dataTables.min.css}"
+              href="vendor/datatables/plugins/select/select.dataTables.min.css" rel="stylesheet">
+
+
+        <link th:href="@{/cjThirdStatic/bootstrap/bootstrap-select/css/bootstrap-select.css}"
+              href="vendor/bootstrap/bootstrap-select/css/bootstrap-select.css" rel="stylesheet">
+
+        <!--ztree-->
+        <link th:href="@{/cjThirdStatic/ztree/css/zTreeStyle/zTreeStyle.css}"
+              href="vendor/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+
+
+    </th:block>
+</head>
+
+<body>
+<th:block th:fragment="cjLearning_js">
+    <!-- Logout Modal-->
+    <!-- Bootstrap core JavaScript-->
+    <script th:src="@{/cjThirdStatic/jquery/jquery.js}" src="vendor/jquery/jquery.js"></script>
+    <script th:src="@{/cjThirdStatic/bootstrap/js/bootstrap.bundle.js}"
+            src="vendor/bootstrap/js/bootstrap.bundle.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script th:src="@{/cjThirdStatic/jquery-easing/jquery.easing.js}"
+            src="vendor/jquery-easing/jquery.easing.js"></script>
+
+    <!-- Page level plugins -->
+    <script th:src="@{/cjThirdStatic/chart.js/Chart.min.js}" src="vendor/chart.js/Chart.min.js"></script>
+
+
+    <!-- dataTables- -->
+    <script th:src="@{/cjThirdStatic/datatables/jquery.dataTables.js}"
+            src="vendor/datatables/jquery.dataTables.js"></script>
+    <!-- dataTables--bootstrap -->
+    <script th:src="@{/cjThirdStatic/datatables/dataTables.bootstrap4.js}"
+            src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+    <!--select插件-->
+    <script th:src="@{/cjThirdStatic/datatables/plugins/select/dataTables.select.min.js}"
+            src="vendor/datatables/plugins/select/dataTables.select.min.js"></script>
+
+
+    <!--bootstrap select-->
+    <script th:src="@{/cjThirdStatic/bootstrap/bootstrap-select/js/bootstrap-select.js}"
+            src="vendor/bootstrap/bootstrap-select/js/bootstrap-select.js"></script>
+    <script th:src="@{/cjThirdStatic/bootstrap/bootstrap-select/js/i18n/defaults-zh_CN.js}"
+            src="vendor/bootstrap/bootstrap-select/js/i18n/defaults-zh_CN.js"></script>
+
+    <!--ztree-->
+    <script th:src="@{/cjThirdStatic/ztree/js/jquery.ztree.all.js}" src="vendor/ztree/js/jquery.ztree.all.js"></script>
+    <!--ckeditor4--classic-->
+    <script src="vendor/ckeditor_all/ckeditor4/ckeditor.js"
+            th:src="@{/cjThirdStatic/ckeditor_all/ckeditor4/ckeditor.js}"></script>
+</th:block>
+</body>
+
+</html>

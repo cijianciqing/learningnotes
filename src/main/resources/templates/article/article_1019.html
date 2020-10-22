@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>CJ LearningNotes</title>
+    <th:block th:replace="~{fragment/fragment :: cjLearning_head}"/>
+
+</head>
+<body>
+
+<div style="height: 56px">
+    <div class="bg-primary fixed-top" style="height: 56px">
+        <div  class="py-2 d-flex justify-content-around ">
+            <button type="button" class="btn btn-dark mr-5" id="cjArticle_viewbtn">查看</button>
+            <!--        <button type="button" class="btn btn-default  btn-" id="cjArticleAdd_clobtn">关闭</button>-->
+            <!--        <button type="button" class="btn btn-dark mr-5" id="cjArticleAdd_subbtn">保存</button>-->
+            <button type="button" class="btn btn-dark mr-5" id="cjArticle_subbtn">保存</button>
+        </div>
+        <!--    <div class="p-3 mb-2 bg-info text-white"> </div>-->
+    </div>
+</div>
+<!--以下为创建和更新页面 create / update-->
+
+    <div class="card shadow mb-4">
+        <!--  <div class="card-header">
+
+          </div>-->
+        <div class="card-body">
+            <form class="form-horizontal">
+                <input type="hidden" name="cjArticleCategoryId" class="form-control"
+                       th:value="${cjArticleObject.categoryId}"
+                       id="cjArticleCategoryId">
+                <input type="hidden" name="cjArticleId" class="form-control" th:value="${cjArticleObject.id}"
+                       id="cjArticleId">
+
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label text-center">标题</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="cjArticleAddName" class="form-control" id="cjArticleAddName"
+                               th:value="${cjArticleObject.name}">
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label text-center">描述</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" name="cjArticleAddDesc" id="cjArticleAddDesc" rows="3"
+                                  th:text="${cjArticleObject.articleDesc}"></textarea>
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <textarea name="cjArticleAddContent" class="form-control" id="cjArticleAddContent"
+                              th:text="${cjArticleObject.content}"></textarea>
+                    <span class="help-block"></span>
+                </div>
+            </form>
+        </div>
+        <!--    <div class="card-footer ">-->
+        <!--    </div>-->
+    </div>
+
+
+<th:block th:replace="~{fragment/fragment :: cjLearning_js}"/>
+<script>
+
+    $(function () {
+        //初始化ckeditor
+        cjCKEditor01 = CKEDITOR.replace($("#cjArticleAddContent")[0], {
+            width: '100%',
+            extraPlugins: 'codesnippet',
+            codeSnippet_theme: 'monokai_sublime',
+        });
+
+        $("#cjArticle_subbtn").on("click", function () {
+            // console.log($("#cjArticleCategoryId").val());
+            // console.log($("#cjArticleId").val());
+            var cjArticleId = $("#cjArticleId").val();
+            if (cjArticleId != "") {//代表为update操作
+                var cjUpdateData = {
+                    "id": cjArticleId,
+                    "name": $("#cjArticleAddName").val(),
+                    "articleDesc": $("#cjArticleAddDesc").val(),
+                    "content": CKEDITOR.instances.cjArticleAddContent.getData(),
+                    "categoryId": $("#cjArticleCategoryId").val()
+                };
+
+                $.ajax({
+                    url: "/article",
+                    method: "put",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(cjUpdateData),
+                    success: function (result) {
+                        alert("updateArticle success");
+                        window.self.close();
+                    },
+                    error: function () {
+                        alert("updateArticle 失败,清理管理员");
+                    }
+                });
+            } else {
+                var cjAddData = {
+                    "name": $("#cjArticleAddName").val(),
+                    "articleDesc": $("#cjArticleAddDesc").val(),
+                    "content": CKEDITOR.instances.cjArticleAddContent.getData(),
+                    "categoryId": $("#cjArticleCategoryId").val()
+                };
+
+                $.ajax({
+                    url: "/article",
+                    method: "post",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(cjAddData),
+                    success: function (result) {
+                        alert("createArticle success");
+                        window.self.close();
+                    },
+                    error: function () {
+                        alert("createArticle 失败,清理管理员");
+                    }
+                });
+            }
+
+        });
+        $("#cjArticle_viewbtn").on("click", function () {
+            window.location.href='/article/' + $("#cjArticleId").val();
+        });
+
+    })
+</script>
+</body>
+
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>CJ LearningNotes</title>
+    <th:block th:replace="~{fragment/fragment :: cjLearning_head}"/>
+
+</head>
+
+<body>
+<div class="container">
+    <table id="cjArticleTable" class="table" cellspacing="0" width="100%">
+        <thead class="thead-light">
+        <tr>
+            <!--                                <th>序号</th>-->
+            <th>ID</th>
+            <!--设置标题头部宽度增大(相比于表内的数据行)-->
+            <th>标题</th>
+            <th>描述</th>
+            <th>创建时间</th>
+            <th>最后修改时间</th>
+            <!--                                            <th>操作</th>-->
+        </tr>
+        </thead>
+    </table>
+</div>
+<th:block th:replace="~{fragment/fragment :: cjLearning_js}"/>
+<script>
+    function formatDate(cjtimestamp) {
+        //console.log(cjtimestamp);
+        if (isNaN(cjtimestamp)) {
+            return "";
+        }
+        var now = new Date(cjtimestamp);
+        var year = now.getFullYear();
+        var month = now.getMonth() + 1;
+        var date = now.getDate();
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        var second = now.getSeconds();
+        return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+    }
+
+    $(document).ready(function () {
+        /*
+     * 初始化article table
+     * */
+        var cjLanguageUrl = "/cjThirdStatic/datatables/cjLanguage.json";
+        /*cjUserTalble初始化*/
+        cjArticleTableInstance = $('#cjArticleTable').DataTable({
+            "scrollY": "400px",//设置纵向高度
+            "scrollCollapse": true,//超过设置高度后，折叠
+            // flexibleWidth: false,
+            responsive: false,
+            "bAutoWidth": false, //自定义列宽
+
+            "language": {
+                "url": cjLanguageUrl
+            },
+            "ajax": {
+                url: '/article/list/1',
+                dataSrc: 'data'
+            },
+            /*添加select插件--单选*/
+            select: {
+                style: 'single'
+            },
+            /*columns与 columnDefs作用类似，但为了便于查看，使用columns来设置data*/
+            "columns": [
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'articleDesc'},
+                {data: 'createTime'},
+                {data: 'updateTime'}
+                // {data: null},
+            ]
+            ,
+            "columnDefs": [
+                {
+                    "visible": false,
+                    "targets": [0]
+                },
+                {//可以直接打开文档详细内容
+                    "render": function (data, type, row) {
+                        return '<a  data-toggle="tooltip" data-placement="top" title="' + row["name"] + '" target="_Blank" href="/article/' + row["id"] + '">' + row["name"] + '</a>';
+                    },
+                    "targets": 1
+                }
+                ,
+                {
+                    "render": function (data, type, row) {
+                        return formatDate(parseInt(row["createTime"]));
+                    },
+                    "targets": [3, 4]
+                }
+            ]
+
+        });
+        /*cjUserTalble设置--设置默认排序规则*/
+        cjArticleTableInstance.order([4, 'desc']).draw();
+
+        //启用tooltip提示冒泡插件
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+</script>
+
+</body>
+
+</html>

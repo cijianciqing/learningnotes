@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>CJ LearningNotes</title>
+    <th:block th:replace="~{fragment/fragment :: cjLearning_head}"/>
+    <style>
+        table {
+            table-layout: fixed;
+        }
+
+        th, td {
+            text-align: center;
+            word-break: keep-all; /*在恰当的断字点进行换行：*/
+            white-space: nowrap; /*不换行*/
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #cjArticleCategoryPath { /*文本垂直居中*/
+            line-height: 31px;
+            max-width: 50%;
+        }
+
+        .cjMainLeftOuter {
+            height: 128px;
+            /*background-color: rgb(166, 162, 179);;*/
+        }
+
+        .cjMainLeft {
+            position: fixed;
+            /*width: 100%;*/
+            /*z-index: 30 ;*/
+            background-color: white;
+        }
+
+        .cjMainRightOuter {
+            position: fixed;
+
+        }
+
+        .cjMainRight {
+
+        }
+
+        /*
+        dataTables-bootstrap样式和 bootstrap-select样式放生冲突
+        */
+        #cjArticleTable_length select {
+            background-size: 1px, 1px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- cjCategory--add 模态框 -->
+<div class="modal fade" id="cjCategoryAddModal" tabindex="-1" role="dialog" aria-labelledby="cjCategoryAddModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="cjCategoryAddModalLabel">添加文章分类</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!--后台校验告警信息-->
+                <ul class="list-group cjategory_ErrorMessage my-2">
+                    <!--<li class="list-group-item list-group-item-danger">Cras justo odio</li>
+                    <li class="list-group-item list-group-item-danger">Dapibus ac facilisis in</li>
+                    <li class="list-group-item list-group-item-danger">Morbi leo risus</li>
+                    <li class="list-group-item list-group-item-danger">Porta ac consectetur ac</li>
+                    <li class="list-group-item list-group-item-danger">Vestibulum at eros</li>-->
+                </ul>
+                <form class="form-horizontal">
+                    <input type="hidden" name="cjCategoryAddPid" class="form-control" id="cjCategoryAddPid">
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="cjCategoryAddName" class="form-control" id="cjCategoryAddName">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">Desc</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="cjCategoryAddDesc" class="form-control" id="cjCategoryAddDesc">
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="cjCategoryAdd_subbtn">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- cjCategory--update 模态框 -->
+<div class="modal fade" id="cjCategoryUpdateModal" tabindex="-1" role="dialog"
+     aria-labelledby="cjCategoryUpdateModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="cjCategoryUpdateModalLabel">文章分类更新</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!--后台校验告警信息-->
+                <ul class="list-group cjategory_ErrorMessage my-2">
+                    <!--<li class="list-group-item list-group-item-danger">Cras justo odio</li>
+                    <li class="list-group-item list-group-item-danger">Dapibus ac facilisis in</li>
+                    <li class="list-group-item list-group-item-danger">Morbi leo risus</li>
+                    <li class="list-group-item list-group-item-danger">Porta ac consectetur ac</li>
+                    <li class="list-group-item list-group-item-danger">Vestibulum at eros</li>-->
+                </ul>
+                <form class="form-horizontal">
+                    <input type="hidden" name="cjCategoryUpdatePid" class="form-control" id="cjCategoryUpdatePid">
+                    <input type="hidden" name="cjCategoryUpdateId" class="form-control" id="cjCategoryUpdateId">
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="cjCategoryUpdateName" class="form-control"
+                                   id="cjCategoryUpdateName">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">Desc</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="cjCategoryUpdateDesc" class="form-control"
+                                   id="cjCategoryUpdateDesc">
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="cjCategoryUpdate_subbtn">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="height: 56px">
+    <nav class="navbar navbar-expand-sm navbar-light bg-warning  fixed-top justify-content-between">
+        <div class="w-50 d-flex justify-content-end"><a class="navbar-brand" href="#">CJ Learning Notes</a></div>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pricing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-4">
+            <div class="cjMainLeftOuter">
+                <div class="cjMainLeft">
+                    <h1 class="h3 mb-2 text-gray-800 my-3 ">文章分类管理</h1>
+
+                    <!-- DataTales Example -->
+                    <div class="py-3 d-flex justify-content-center ">
+                        <!--                    <div class="d-flex justify-content-start">-->
+                        <button class='btn btn-primary btn-sm ml-2 ' id="cjzTreeAddMenu_btn"><i
+                                class='fas fa-folder-plus mr-2'></i>新增分类
+                        </button>
+
+                        <button class='btn btn-warning btn-sm ml-2' id="cjzTreeUpdateNode_btn"><i
+                                class="fas fa-sync-alt"></i>更新分类
+                        </button>
+
+                        <button class='btn btn-danger btn-sm ml-2' id="cjzTreeDeleteNode_btn"><i
+                                class='fas fa-minus-circle mr-2'></i>删除分类
+                        </button>
+                        <button class='btn btn-info btn-sm ml-2' id="cjzTreeShowNode_btn"><i
+                                class='fas fa-info-circle mr-2'></i>查看分类详细信息
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class=" overflow-auto" style="height: 100%">
+                <div class="d-flex justify-content-center">
+                    <ul id="cjArticleCategoryTree" class="ztree"></ul>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-1"></div>
+        <div class="col-7 ">
+            <div class="cjMainRightOuter">
+                <div class="cjMainRight">
+                    <h1 class="h3 mb-2 text-gray-800 my-3">分类中文章管理</h1>
+                    <div class="py-3 d-flex justify-content-between">
+                        <div class=" alert-primary  " id="cjArticleCategoryPath"></div>
+                        <div class="pr-5 d-flex justify-content-start">
+                            <button id="cjAddArticleButton" class='btn btn-success btn-sm'><i
+                                    class='fas fa-user-plus mr-2'></i>添加文章
+                            </button>
+                            <button id="cjEditArticleButton" class='btn btn-primary btn-sm ml-4  cjRoleEdit_btn'><i
+                                    class='fas fa-edit'></i>编辑文章
+                            </button>
+                            <button id="cjDelArticleButton" class='btn btn-danger  btn-sm  ml-4 cjRoleDel_btn'><i
+                                    class='fas fa-trash'></i>删除文章
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <table id="cjArticleTable" class="table" cellspacing="0" width="100%">
+                    <thead class="thead-light">
+                    <tr>
+                        <!--                                <th>序号</th>-->
+                        <th>ID</th>
+                        <!--设置标题头部宽度增大(相比于表内的数据行)-->
+                        <th >标题</th>
+                        <th>描述</th>
+                        <th>创建时间</th>
+                        <th>最后修改时间</th>
+                        <!--                                            <th>操作</th>-->
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragment/fragment :: cjLearning_js}"/>
+<script type="application/javascript">
+
+
+    function formatDate(cjtimestamp) {
+        //console.log(cjtimestamp);
+        if (isNaN(cjtimestamp)) {
+            return "";
+        }
+        var now = new Date(cjtimestamp);
+        var year = now.getFullYear();
+        var month = now.getMonth() + 1;
+        var date = now.getDate();
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        var second = now.getSeconds();
+        return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+    }
+
+    var cjArticleTableInstance;
+
+    function cjGetDataTables(categoryId) {
+        /*
+        * 初始化article table
+        * */
+        var cjLanguageUrl = "/cjThirdStatic/datatables/cjLanguage.json";
+        /*cjUserTalble初始化*/
+        cjArticleTableInstance = $('#cjArticleTable').DataTable({
+            "scrollY": "490px",//设置纵向高度
+            "scrollCollapse": true,//超过设置高度后，折叠
+            // flexibleWidth: false,
+            responsive: false,
+            "bAutoWidth": false, //自定义列宽
+
+            "language": {
+                "url": cjLanguageUrl
+            },
+            "ajax": {
+                url: '/article/list/' + categoryId,
+                dataSrc: 'data'
+            },
+            /*添加select插件--单选*/
+            select: {
+                style: 'single'
+            },
+            /*columns与 columnDefs作用类似，但为了便于查看，使用columns来设置data*/
+            "columns": [
+                // {data: null},//问题： 只能这样？？？？
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'articleDesc'},
+                {data: 'createTime'},
+                {data: 'updateTime'}
+                // {data: null},
+            ]
+            ,
+            "columnDefs": [
+                /*为所有列添加  css  class，并设置字体垂直居中*/
+                // {
+                //     className: "text-center py-1",
+                //     targets: "_all"
+                // },
+                // /*第一列为索引列，所以不排序，不搜索*/
+                // {
+                //     "searchable": false,
+                //     "orderable": false,
+                //     "targets": [0]
+                // },
+                /*第二列为员工ID，需要隐藏*/
+                {
+                    "visible": false,
+                    "targets": [0]
+                },
+                {//可以直接打开文档详细内容
+                    "render": function (data, type, row) {
+                        return '<a  data-toggle="tooltip" data-placement="top" title="' + row["name"] + '" target="_Blank" href="/article/' + row["id"] + '">' + row["name"] + '</a>';
+                    },
+                    "targets": 1
+                }
+                ,
+                {
+                    "render": function (data, type, row) {
+                        return formatDate(parseInt(row["createTime"]));
+                    },
+                    "targets": [3, 4]
+                }
+                // ,
+                // {
+                //     width: "200px",
+                //     "targets": 2
+                // }
+            ]
+
+        });
+        /*cjUserTalble设置--设置默认排序规则*/
+        cjArticleTableInstance.order([4, 'desc']).draw();
+
+        //启用tooltip提示冒泡插件
+        $('[data-toggle="tooltip"]').tooltip();
+
+        /*jUserTalble设置--设置索引列*/
+        // cjArticleTableInstance.on('order.dt search.dt', function () {
+        //     cjArticleTableInstance.column(0, {
+        //         search: 'applied',
+        //         order: 'applied'
+        //     }).nodes().each(function (cell, i) {
+        //         cell.innerHTML = i + 1;
+        //     });
+        // }).draw();
+    };
+
+
+    var cjzTreeObj;
+    // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+    var setting = {
+        callback: {//回调函数设置
+            onClick: cjzTreeonClick,
+            beforeDrop: cjzTreeBeforeDrop,//禁止将节点拖拽成为根节点,用于捕获节点拖拽操作结束之前的事件回调函数，并且根据返回值确定是否允许此拖拽操作
+            onDrop: cjzTreeOnDrop//拖拽成功后，重新加载ztree
+        },
+        check: {
+            //显示为radio
+            // enable: true,
+            // chkStyle: "radio"
+        },
+        data: {
+            key: {
+                name: "name",//节点显示名称
+                title: "categoryDesc",//鼠标悬浮在节点时，提示内容
+                //zTree 节点数据保存节点链接的目标 URL 的属性名称。默认值为node的属性："url"
+                //设置为空，则点击时无反应
+                url: "",
+                isParent: "isParent"//节点是否为父节点
+            },
+            simpleData: {
+                enable: true,//采用simpleData
+                idKey: "id",
+                pIdKey: "pid",
+                rootPId: "1"//设置rootPid
+            }
+        },
+        edit: {
+            enable: true,
+            showRemoveBtn: false,//不显示删除按钮
+            showRenameBtn: false,//不显示重命名按钮
+            drag: {
+                prev: true,
+                next: true,
+                inner: true
+            }
+
+        },
+        view: {
+            // dblClickExpand: false,//双击节点时，是否自动展开父节点的标识
+            selectedMulti: false//设置是否允许同时选中多个节点。
+        }
+    };
+
+    function cjzTreeBeforeDrop(treeId, treeNodes, targetNode, moveType) {
+        console.log("cjzTreeBeforeDrop...");
+        // console.log(targetNode);
+        // console.log(treeId);
+        // console.log(moveType);
+        // console.log(treeNodes[0].id);
+        var cjzTreeBeforeDropFalg = true;
+        if (targetNode == null || (moveType != "inner" && !targetNode.parentTId)) {
+            cjzTreeBeforeDropFalg = false;
+            return cjzTreeBeforeDropFalg;
+        }
+        //移动节点的id
+        var cjzTreeBeforeDropNodeId = treeNodes[0].id;
+        //移动类型
+        var cjzTreeBeforeDropMoveType = moveType;
+        //目标节点的id
+        var cjzTreeBeforeDropTargetId = targetNode.id;
+        console.log("移动" + treeNodes[0].name + "," + moveType + "-->" + targetNode.name);
+        var cjzTreeNodeMove = {
+            "treeNodeId": treeNodes[0].id,
+            "moveType": moveType,
+            "targetId": targetNode.id,
+        }
+        $.ajax({
+            url: "/article/category/move",
+            async: "false",//同步处理，避免错误
+            method: "post",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(cjzTreeNodeMove),
+            success: function (result) {
+                console.log("move ztreeNode success");
+            },
+            error: function () {
+                alert("move ztreeNode 失败,请联系管理员");
+                cjzTreeBeforeDropFalg=false;
+            }
+        });
+        return cjzTreeBeforeDropFalg;
+    };
+
+    function cjzTreeOnDrop(event, treeId, treeNodes, targetNode, moveType) {
+        // console.log("refresh ztree");
+        //cjzTreeObj.reAsyncChildNodes(null, "refresh");
+        // cjzTreeObj.refresh();
+        //alert(treeNodes.length + "," + (targetNode ? (targetNode.tId + ", " + targetNode.name) : "isRoot" ));
+    };
+
+    // function cjInnerCanBeRoot(treeId, nodes, targetNode) {
+    //     console.log("cjInnerCanBeRoot...");
+    //     console.log(targetNode.name);
+    //     return !(targetNode && targetNode.level === 0);//level=0代表root
+    // }
+    // function cjPreCanBeRoot(treeId, nodes, targetNode) {//禁止拖拽到root之前
+    //     console.log("cjPreCanBeRoot...");
+    //     console.log(targetNode.name);
+    //     return !(targetNode && targetNode.level === 0);//level=0代表root
+    // }
+    function cjzTreeonClick(event, treeId, treeNode) {//单机分类，右侧展示分类下的文章
+        cjArticleTableInstance.destroy();
+        cjGetDataTables(treeNode.id);
+        var cjClickParentNode = treeNode;
+        var cjClickNodePath = treeNode.name;
+        //var cjClickParentNode = treeNode.getParentNode();
+        while (cjClickParentNode.level !== 0) {
+            //console.log(cjClickNodePath);
+            cjClickParentNode = cjClickParentNode.getParentNode();
+            cjClickNodePath = cjClickParentNode.name + '/' + cjClickNodePath;
+        }
+        cjClickNodePath = "/" + cjClickNodePath;
+        //console.log(cjClickNodePath);
+        $("#cjArticleCategoryPath").text(cjClickNodePath);
+        // console.log(treeNode.tId + ", " + treeNode.name + ", " + treeNode.id+ ", " + treeNode.parentTId);
+    };
+    /*
+     * 文章分类的增删改
+     * */
+
+    //清空内容,样式
+    function cjreset_form(ele) {
+        $(ele)[0].reset();
+    }
+
+    //文章分类--add
+    var cjAddCategorySelectedNode;
+    $("#cjzTreeAddMenu_btn").on("click", function () {
+        var nodes = cjzTreeObj.getSelectedNodes();
+        if (nodes.length < 1) {
+            alert("请选择文章分类");
+            return;
+        }
+        cjreset_form("#cjCategoryAddModal form");
+        cjAddCategorySelectedNode = nodes[0];
+        $("#cjCategoryAddPid").val(cjAddCategorySelectedNode.id);
+        $("#cjCategoryAddModal").modal({});
+    });
+    $("#cjCategoryAdd_subbtn").on("click", function () {
+        var cjCategoryAddData = {
+            "pid": $("#cjCategoryAddPid").val(),
+            "name": $("#cjCategoryAddName").val(),
+            "categoryDesc": $("#cjCategoryAddDesc").val(),
+        };
+        $.ajax({
+            url: "/article/category",
+            method: "post",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(cjCategoryAddData),
+            success: function (result) {
+                console.log("create category success");
+                //隐藏模态框
+                $("#cjCategoryAddModal").modal('hide');
+                var cjCreatedNode = {
+                    id: result.data.id,
+                    pId: $("#cjCategoryAddPid").val(),
+                    isParent: true,
+                    name: $("#cjCategoryAddName").val()
+                };
+                cjzTreeObj.addNodes(cjAddCategorySelectedNode, cjCreatedNode);
+            },
+            error: function () {
+                alert("create category 失败,请理管理员");
+            }
+        });
+    });
+
+    //文章分类--update
+    var cjUpdateCategorySelectedNode;
+    $("#cjzTreeUpdateNode_btn").on("click", function () {
+        var nodes = cjzTreeObj.getSelectedNodes();
+        if (nodes.length < 1) {
+            alert("请选择文章分类");
+            return;
+        }
+        cjreset_form("#cjCategoryUpdateModal form");
+        cjUpdateCategorySelectedNode = nodes[0];
+        //获取当前的category信息
+        $.ajax({
+            url: "/article/category/" + cjUpdateCategorySelectedNode.id,
+            method: "get",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                console.log("cjArticleCategoryUpdate, get category success");
+
+                $("#cjCategoryUpdatePid").val(result.data.pid);
+                $("#cjCategoryUpdateName").val(result.data.name);
+                $("#cjCategoryUpdateDesc").val(result.data.categoryDesc);
+                $("#cjCategoryUpdateId").val(result.data.id);
+                //打开模态框
+                $("#cjCategoryUpdateModal").modal({});
+            },
+            error: function () {
+                alert("cjArticleCategoryUpdate, get category 失败,请联系管理员");
+            }
+        });
+    });
+    $("#cjCategoryUpdate_subbtn").on("click", function () {
+        var cjCategoryUpdateData = {
+            "id": $("#cjCategoryUpdateId").val(),
+            "pid": $("#cjCategoryUpdatePid").val(),
+            "name": $("#cjCategoryUpdateName").val(),
+            "categoryDesc": $("#cjCategoryUpdateDesc").val(),
+        };
+        $.ajax({
+            url: "/article/category",
+            method: "put",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(cjCategoryUpdateData),
+            success: function (result) {
+                console.log("create category success");
+                //隐藏模态框
+                $("#cjCategoryUpdateModal").modal('hide');
+                // var cjUpdateNode = {
+                //     id: $("#cjCategoryUpdateId").val(),
+                //     pId: $("#cjCategoryUpdatePid").val(),
+                //     isParent: true,
+                //     name: result.data.name
+                // };
+                cjUpdateCategorySelectedNode.name = result.data.name;
+                // cjzTreeObj.destroy();
+                // cjzTreeObj = $.fn.zTree.init($("#cjArticleCategoryTree"), setting, zNodes);
+                // cjzTreeObj.selectNode(cjUpdateNode);
+                cjzTreeObj.updateNode(cjUpdateCategorySelectedNode);
+                //cjzTreeObj.editName(cjUpdateNode);
+            },
+            error: function () {
+                alert("update category 失败,请联系管理员");
+            }
+        });
+    });
+
+    //文章分类--delete
+    var cjDeleteCategorySelectedNode;
+    $("#cjzTreeDeleteNode_btn").on("click", function () {
+        var nodes = cjzTreeObj.getSelectedNodes();
+        if (nodes.length < 1) {
+            alert("请选择文章分类");
+            return;
+        }
+        cjDeleteCategorySelectedNode = nodes[0];
+        //获取当前的category信息
+        $.ajax({
+            url: "/article/category/" + cjDeleteCategorySelectedNode.id,
+            method: "delete",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                console.log("cjArticleCategoryDelete,  success");
+                cjzTreeObj.removeNode(cjDeleteCategorySelectedNode);
+            },
+            error: function () {
+                console.log("cjArticleCategoryDelete失败,请理管理员");
+            }
+        });
+
+    });
+
+
+    $(document).ready(function () {
+        /*始化data tables*/
+        cjGetDataTables(1);
+        /*
+       * 初始化zTree
+       * */
+        $.ajax({
+            url: "/article/category/getAll",
+            method: "get",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+
+                //zNodes = eval(data.menuAll);
+                zNodes = result.data;
+                //初始化
+                cjzTreeObj = $.fn.zTree.init($("#cjArticleCategoryTree"), setting, zNodes);
+
+                var cjAllnodes = cjzTreeObj.getNodes();
+                // console.log(cjAllnodes);
+                // console.log(cjAllnodes.length);
+                for (var i = 0; i < cjAllnodes.length; i++) { //展开到第二层节点
+                    //console.log(cjAllnodes[i].name);
+                    cjzTreeObj.expandNode(cjAllnodes[i], true, false, true);
+                }
+                // cjzTreeObj.expandAll(true); //展开树
+            },
+            error: function () {
+                alert("/article/category/getList 获取 categories 失败，无法初始化ztree,请联系理管理员");
+            }
+        });
+
+        var cjCKEditorAdd;
+        var cjCKEditorEdit;
+        /*
+     * 文章的增删改
+     * */
+
+
+        //新增
+        $("#cjAddArticleButton").on("click", function () {
+            var nodes = cjzTreeObj.getSelectedNodes();
+            if (nodes.length < 1) {
+                alert("请选择文章分类");
+                return;
+            }
+
+            window.open('/article/withCategory/' + nodes[0].id);
+        });
+
+        //编辑
+        $("#cjEditArticleButton").on("click", function () {
+            if (cjArticleTableInstance.rows({selected: true}).data().length < 1) {
+                alert("请选择article");
+                return;
+            }
+            var cjEditArticle = cjArticleTableInstance.row({selected: true}).data();
+            window.open('/article/update/' + cjEditArticle["id"]);
+        });
+
+        //删除
+        $("#cjDelArticleButton").on("click", function () {
+            if (cjArticleTableInstance.rows({selected: true}).data().length < 1) {
+                alert("请选择article");
+                return;
+            }
+            var cjDelArticle = cjArticleTableInstance.row({selected: true}).data();
+            $.ajax({
+                url: "/article/" + cjDelArticle["id"],
+                method: "delete",
+                dataType: "json",
+                contentType: "application/json",
+                success: function (result) {
+                    alert("delArticle success");
+                    cjArticleTableInstance.destroy();
+                    var cjDelArticleNodes = cjzTreeObj.getSelectedNodes();
+                    if (cjDelArticleNodes.length < 1) {//有可能为选择分类，即选择了root分类
+                        cjGetDataTables(1);
+                        return;
+                    }
+                    cjGetDataTables(cjDelArticleNodes[0].id);
+
+                },
+                error: function () {
+                    alert("delArticle 失败,请理管理员");
+                }
+            });
+        });
+
+
+    });
+
+</script>
+
+</body>
+
+</html>

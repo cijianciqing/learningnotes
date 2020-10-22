@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozermapper.github.io/schema/bean-mapping"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping http://dozermapper.github.io/schema/bean-mapping.xsd">
+
+
+
+    <!--从user到viewUser-->
+    <mapping>
+        <class-a>nanshan.cj.learningnotes.entity.CJArticleCategory</class-a>
+        <class-b>nanshan.cj.learningnotes.dao.dto.CJViewArticleCategory</class-b>
+        <field>
+            <a>parent.id</a>
+            <b>pid</b>
+        </field>
+    </mapping>
+
+    <mapping>
+        <class-a>nanshan.cj.learningnotes.entity.CJArticle</class-a>
+        <class-b>nanshan.cj.learningnotes.dao.dto.CJViewArticle</class-b>
+        <field>
+            <a>category.id</a>
+            <b>categoryId</b>
+        </field>
+    </mapping>
+
+<!--    <mapping>-->
+<!--        <class-a>nanshan.cj.learningnotes.dao.dto.CJViewArticle</class-a>-->
+<!--        <class-b>nanshan.cj.learningnotes.entity.CJArticle</class-b>-->
+<!--        <field>-->
+<!--            <a>categoryId</a>-->
+<!--            <b>category.id</b>-->
+<!--        </field>-->
+<!--    </mapping>-->
+
+
+</mappings>

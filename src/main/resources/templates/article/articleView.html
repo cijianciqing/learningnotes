@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title th:text="${cjArticleObject.name}">CJ LearningNotes</title>
+    <th:block th:replace="~{fragment/fragment :: cjLearning_head}"/>
+    <!--ckeditor--4-->
+    <style>
+        code { /*代码块css*/
+            background-color: #b1bbba;
+            font-size: 14px !important;
+            overflow: auto;
+            color: #000;
+
+        }
+        .cjAttach{
+            /*display: block;*/
+            /*height: 40px;*/
+            /*width: 40px;*/
+            /*position:relative;*/
+        }
+        .cjAttach::before {
+            /*content: "♥";*/
+            /*: " ";*/
+            content: url(/icon/attach/attachment_24px_1139178_easyicon.net.ico);
+            /*display: inline;*/
+          /*  display:block;
+            height: 40px;
+            width: 40px;
+            background: url(/icon/attach/attachment_48px_1139178_easyicon.net.ico) no-repeat ;
+            !*background-size: 40px 40px;*!
+            !*position:absolute;*!
+            margin-right:10px*/
+        }
+    </style>
+</head>
+<body>
+
+<div style="height: 56px">
+    <div class="bg-primary fixed-top" style="height: 56px">
+        <div class="py-2 d-flex justify-content-end ">
+            <button type="button" class="btn btn-dark mr-5" id="cjArticle_subbtn">编辑文章</button>
+        </div>
+    </div>
+</div>
+
+<!--以下为展示页面 view-->
+
+<div class="container">
+    <div class="card shadow mb-4">
+        <input type="hidden" th:value="${cjArticleObject.id}" id="cjAticleViewId">
+        <div class="card-body ">
+
+            <div class="d-flex justify-content-center">
+                <h1 th:text="${cjArticleObject.name}"></h1>
+            </div>
+            <div class="dropdown-divider"></div>
+
+            <div class="d-flex justify-content-center">
+                <h6>创建时间</h6>
+                <h6 th:text="${#dates.format(cjArticleObject.createTime,'yyyy-MM-dd HH:mm:ss')}"></h6>
+            </div>
+            <div class="d-flex justify-content-center">
+                <h6>最后修改时间</h6>
+                <h6 th:text="${#dates.format(cjArticleObject.updateTime,'yyyy-MM-dd HH:mm:ss')}"></h6>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="d-flex justify-content-center">
+                <h3 th:text="${cjArticleObject.articleDesc}"></h3>
+            </div>
+            <div class="dropdown-divider"></div>
+
+            <div th:utext="${cjArticleObject.content}"></div>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:replace="~{fragment/fragment :: cjLearning_js}"/>
+<script>
+    //编辑
+    $("#cjArticle_subbtn").on("click", function () {
+        window.location.href = '/article/update/' + $("#cjAticleViewId").val();
+    });
+
+</script>
+</body>
+
+</html>
