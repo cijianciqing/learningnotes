@@ -1,13 +1,15 @@
 package nanshan.cj.learningnotes.controller;
 
+import cn.com.ns.cj.cjuniversalspringbootstarter.returnData.CJRDataUtil;
+import cn.com.ns.cj.cjuniversalspringbootstarter.returnData.CJReturnedData;
 import lombok.extern.slf4j.Slf4j;
 import nanshan.cj.learningnotes.dao.dto.CJViewArticle;
 import nanshan.cj.learningnotes.dao.dto.CJViewArticleCategory;
 import nanshan.cj.learningnotes.entity.CJArticle;
+import nanshan.cj.learningnotes.entity.util.CJArticleSearchUtilBean;
+import nanshan.cj.learningnotes.entity.util.CJDataTablesReturnData;
 import nanshan.cj.learningnotes.service.CJArticleCategoryService;
 import nanshan.cj.learningnotes.service.CJArticleService;
-import nanshan.cj.learningnotes.utils.returnData.CJRDataUtil;
-import nanshan.cj.learningnotes.utils.returnData.CJReturnedData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +28,21 @@ public class CJArticlController {
     @Autowired
     CJArticleService cjArticleService;
 
-    @GetMapping(value = "/list/{categoryId}")
-    public CJReturnedData getAllCategory(@PathVariable(value = "categoryId",required = false) Long id ){
+    @GetMapping(value = "/ttt")
+    public String getAllCategory(){
+        System.out.println(1/0);
+        return "cjT01";
+    }
+
+    @PostMapping(value = "/list/{categoryId}")
+    public CJReturnedData getAllCategory(@PathVariable(value = "categoryId",required = false) Long id
+            , @RequestBody @Valid CJArticleSearchUtilBean cjArticleSearchUtilBean){
        /* Long cjCategoryId = 1L;
         if( StringUtils.isNotEmpty(id)){
             cjCategoryId = Long.parseLong(id);
         }*/
-        List<CJViewArticle> articlesBycategoryId = cjArticleService.getArticlesBycategoryId(id);
+//        log.info(cjArticleSearchUtilBean.toString());
+        CJDataTablesReturnData articlesBycategoryId = cjArticleService.getArticlesBycategoryId(id, cjArticleSearchUtilBean);
         return  CJRDataUtil.success(articlesBycategoryId);
     }
 

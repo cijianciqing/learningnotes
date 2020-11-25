@@ -10,4 +10,6 @@ public class LearningnotesApplication {
         SpringApplication.run(LearningnotesApplication.class, args);
     }
 
+
+
 }

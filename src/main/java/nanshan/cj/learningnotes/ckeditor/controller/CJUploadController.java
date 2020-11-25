@@ -1,5 +1,6 @@
 package nanshan.cj.learningnotes.ckeditor.controller;
 
+import cn.hutool.core.date.DateTime;
 import lombok.extern.slf4j.Slf4j;
 import nanshan.cj.learningnotes.ckeditor.entity.CJCKEditorUploadResponse;
 import nanshan.cj.learningnotes.ckeditor.entity.CJCKEditorUploadResponseUtil;
@@ -39,7 +40,9 @@ public class CJUploadController {
         String filePath = path;
         if (!file.isEmpty()) {
             try {
-                cjFileName = file.getOriginalFilename();
+                long time = DateTime.now().getTime();
+
+                cjFileName = String.format("%s_%s", time, file.getOriginalFilename());//加上时间戳，避免重复
                 cjFilePath = filePath + cjFileName;
 
                 System.out.println(cjFileName);

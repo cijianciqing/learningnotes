@@ -19,6 +19,13 @@
     </properties>
 
     <dependencies>
+        <!--cj universal start-->
+        <dependency>
+            <groupId>cn.com.ns.cj</groupId>
+            <artifactId>cjuniversal-spring-boot-starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <!--cj universal end-->
      <!--star web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

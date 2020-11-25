@@ -21,7 +21,7 @@ spring:
   mvc:
     favicon:
       ##关闭默认图标
-      enabled: true
+      enabled: false
 
 
 #  # jackson
@@ -76,3 +76,7 @@ spring:
 #  globalSessionTimeout: 60
 #  #每隔10分钟检查一次，是否有过期session
 #  schedulerInterval: 30
+####################################
+#        自定义参数            #
+####################################
+#cj.universal.enable : enabled
