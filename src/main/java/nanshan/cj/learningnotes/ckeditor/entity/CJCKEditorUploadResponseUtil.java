@@ -2,8 +2,6 @@ package nanshan.cj.learningnotes.ckeditor.entity;
 
 import cn.hutool.core.collection.ListUtil;
 import lombok.*;
-import nanshan.cj.learningnotes.utils.returnData.CJReturnEnum;
-import nanshan.cj.learningnotes.utils.returnData.CJReturnedData;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;

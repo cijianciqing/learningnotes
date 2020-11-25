@@ -45,7 +45,6 @@ public class CJArticleCategory extends CJBaseEntity implements Serializable {
     @JsonBackReference
     @OneToMany(mappedBy = "parent",fetch=FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @OrderBy("sortNo ASC")
-//    @Fetch(FetchMode.SUBSELECT)
     private Set<CJArticleCategory> children;
 
     //序号
@@ -53,7 +52,6 @@ public class CJArticleCategory extends CJBaseEntity implements Serializable {
 
     @JsonBackReference
     @OneToMany(mappedBy = "category",fetch=FetchType.EAGER, cascade = {CascadeType.REMOVE})
-//    @Fetch(FetchMode.SUBSELECT)
     private Set<CJArticle> articles = new HashSet<>();
 
     @Override

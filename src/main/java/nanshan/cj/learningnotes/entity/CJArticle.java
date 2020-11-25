@@ -34,6 +34,10 @@ public class CJArticle extends CJBaseEntity implements Serializable {
     @ManyToOne
     private CJArticleCategory category;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private CJArticleState cjArticleState;
+
     @Override
     public String toString() {
         return "CJArticle{" +

@@ -28,20 +28,35 @@
             /*background-color: rgb(166, 162, 179);;*/
         }
 
+
         .cjMainLeft {
             position: fixed;
-            /*width: 100%;*/
-            /*z-index: 30 ;*/
+            width: 33%;
             background-color: white;
+            z-index: 1; /*默认为auto*/
         }
+
+        .cjMainLeftOuter02 {
+            /*height: 100%;*/
+            height: 500px;
+            overflow: auto;
+            /*background-color: red;*/
+
+        }
+
 
         .cjMainRightOuter {
-            position: fixed;
+            height: 128px;
+            /*background-color: red;*/
 
         }
 
-        .cjMainRight {
 
+        .cjMainRight {
+            position: fixed;
+            background-color: white;
+            width: 58%; /*根据  col-7/ col-12 计算得来，fixed的元素对标的是body*/
+            z-index: 1; /*默认为auto*/
         }
 
         /*
@@ -178,27 +193,31 @@
                     <h1 class="h3 mb-2 text-gray-800 my-3 ">文章分类管理</h1>
 
                     <!-- DataTales Example -->
-                    <div class="py-3 d-flex justify-content-center ">
-                        <!--                    <div class="d-flex justify-content-start">-->
-                        <button class='btn btn-primary btn-sm ml-2 ' id="cjzTreeAddMenu_btn"><i
-                                class='fas fa-folder-plus mr-2'></i>新增分类
-                        </button>
+                    <div class="py-3 d-flex justify-content-between ">
 
-                        <button class='btn btn-warning btn-sm ml-2' id="cjzTreeUpdateNode_btn"><i
-                                class="fas fa-sync-alt"></i>更新分类
-                        </button>
+                        <div class="d-flex justify-content-start">
 
-                        <button class='btn btn-danger btn-sm ml-2' id="cjzTreeDeleteNode_btn"><i
-                                class='fas fa-minus-circle mr-2'></i>删除分类
-                        </button>
-                        <button class='btn btn-info btn-sm ml-2' id="cjzTreeShowNode_btn"><i
-                                class='fas fa-info-circle mr-2'></i>查看分类详细信息
-                        </button>
+                            <button class='btn btn-primary btn-sm ml-2 ' id="cjzTreeAddMenu_btn"><i
+                                    class='fas fa-folder-plus mr-2'></i>新增分类
+                            </button>
+
+                            <button class='btn btn-warning btn-sm ml-2' id="cjzTreeUpdateNode_btn"><i
+                                    class="fas fa-sync-alt"></i>更新分类
+                            </button>
+
+                            <button class='btn btn-danger btn-sm ml-2' id="cjzTreeDeleteNode_btn"><i
+                                    class='fas fa-minus-circle mr-2'></i>删除分类
+                            </button>
+                            <!--                        <button class='btn btn-info btn-sm ml-2' id="cjzTreeShowNode_btn"><i-->
+                            <!--                                class='fas fa-info-circle mr-2'></i>查看分类详细信息-->
+                            <!--                        </button>-->
+                        </div>
+                        <div class="alert-primary"></div>
                     </div>
                 </div>
             </div>
-            <div class=" overflow-auto" style="height: 100%">
-                <div class="d-flex justify-content-center">
+            <div class="cjMainLeftOuter02 ">
+                <div class="d-flex justify-content-center" >
                     <ul id="cjArticleCategoryTree" class="ztree"></ul>
                 </div>
             </div>
@@ -209,7 +228,7 @@
             <div class="cjMainRightOuter">
                 <div class="cjMainRight">
                     <h1 class="h3 mb-2 text-gray-800 my-3">分类中文章管理</h1>
-                    <div class="py-3 d-flex justify-content-between">
+                    <div class="py-3 d-flex justify-content-between cjToolNav">
                         <div class=" alert-primary  " id="cjArticleCategoryPath"></div>
                         <div class="pr-5 d-flex justify-content-start">
                             <button id="cjAddArticleButton" class='btn btn-success btn-sm'><i
@@ -224,31 +243,32 @@
                         </div>
                     </div>
                 </div>
-
-                <table id="cjArticleTable" class="table" cellspacing="0" width="100%">
-                    <thead class="thead-light">
-                    <tr>
-                        <!--                                <th>序号</th>-->
-                        <th>ID</th>
-                        <!--设置标题头部宽度增大(相比于表内的数据行)-->
-                        <th >标题</th>
-                        <th>描述</th>
-                        <th>创建时间</th>
-                        <th>最后修改时间</th>
-                        <!--                                            <th>操作</th>-->
-                    </tr>
-                    </thead>
-                </table>
             </div>
+            <table id="cjArticleTable" class="table" cellspacing="0" width="100%">
+                <thead class="thead-light">
+                <tr>
+                    <!--                                <th>序号</th>-->
+                    <th>ID</th>
+                    <!--设置标题头部宽度增大(相比于表内的数据行)-->
+                    <th>标题</th>
+                    <th>状态</th>
+                    <th>描述</th>
+                    <th>创建时间</th>
+                    <th>最后修改时间</th>
+                    <!--                                            <th>操作</th>-->
+                </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
+
 
 <th:block th:replace="~{fragment/fragment :: cjLearning_js}"/>
 <script type="application/javascript">
 
 
-    function formatDate(cjtimestamp) {
+   /* function formatDate(cjtimestamp) {
         //console.log(cjtimestamp);
         if (isNaN(cjtimestamp)) {
             return "";
@@ -261,10 +281,157 @@
         var minute = now.getMinutes();
         var second = now.getSeconds();
         return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
-    }
+    }*/
 
     var cjArticleTableInstance;
+   function cjInitDataTables() {
+       /*
+       * 初始化article table
+       * */
+       var cjLanguageUrl = "/cjThirdStatic/datatables/cjLanguage.json";
+       /*cjUserTalble初始化*/
+       cjArticleTableInstance = $('#cjArticleTable').DataTable({
+           dom: 'Bfrtip',
+           buttons: [
+               {
+                   extend: 'colvisGroup',
+                   text: 'Hide Desc',
+                   hide: [3,4,5]
+               },
+               {
+                   extend: 'colvisGroup',
+                   text: 'Show all',
+                   hide: [0],
+                   show: [1,2,3,4,5]
+               }
+           ],
+           stateSave: true,
+           "scrollY": "490px",//设置纵向高度
+           "scrollCollapse": true,//超过设置高度后，折叠
+           // flexibleWidth: false,
+           responsive: false,
+           "bAutoWidth": false, //自定义列宽
 
+           "language": {
+               "url": cjLanguageUrl
+           },
+           serverSide: true,
+           // "ajax": {
+           //     url: '/article/list/' + categoryId,
+           //     dataSrc: 'data'
+           // },
+           ajax: function (data, callback, settings) {
+               //封装请求参数
+               var cjAjaxparam = {};
+               cjAjaxparam.draw = data.draw;
+               cjAjaxparam.limit = data.length;//页面显示记录条数，在页面显示每页显示多少项的时候
+               cjAjaxparam.start = data.start;//开始的记录序号
+               cjAjaxparam.page = (data.start / data.length)+1;//当前页码
+               //cjAjaxparam.order = data.order[0];
+               cjAjaxparam.searchValue = data.search.value;
+               $.ajax({
+                   type: "post",
+                   url: '/article/list/' + 1,
+                   cache: false,  //禁用缓存
+                   contentType: "application/json",
+                   data: JSON.stringify(cjAjaxparam),  //传入组装的参数
+                   dataType: "json",
+                   success: function (resultData) {
+                       var result = resultData.data;
+                       console.log("cjDataTables returned data: ",result);
+                       //setTimeout仅为测试延迟效果
+                       setTimeout(function () {
+                           //封装返回数据
+                           var returnData = {};
+                           returnData.draw = result.draw;//这里直接自行返回了draw计数器,应该由后台返回
+                           returnData.recordsTotal = result.total;//返回数据全部记录
+                           returnData.recordsFiltered = result.total;//后台不实现过滤功能，每次查询均视作全部结果
+                           returnData.data = result.data;//返回的数据列表
+                           //console.log(returnData);
+                           //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
+                           //此时的数据需确保正确无误，异常判断应在执行此回调前自行处理完毕
+                           callback(returnData);
+                       }, 200);
+                   }
+               });
+           },
+           /*添加select插件--单选*/
+           select: {
+               style: 'single'
+           },
+           /*columns与 columnDefs作用类似，但为了便于查看，使用columns来设置data*/
+           "columns": [
+               // {data: null},//问题： 只能这样？？？？
+               {data: 'id'},
+               {data: 'name'},
+               {data: 'articleState'},
+               {data: 'articleDesc'},
+               {data: 'createTime'},
+               {data: 'updateTime'}
+               // {data: null},
+           ]
+           ,
+           "columnDefs": [
+               /*为所有列添加  css  class，并设置字体垂直居中*/
+               // {
+               //     className: "text-center py-1",
+               //     targets: "_all"
+               // },
+               // /*第一列为索引列，所以不排序，不搜索*/
+               // {
+               //     "searchable": false,
+               //     "orderable": false,
+               //     "targets": [0]
+               // },
+               /*第二列为员工ID，需要隐藏*/
+               {
+                   "visible": false,
+                   "targets": [0]
+               },
+               {//可以直接打开文档详细内容
+                   "render": function (data, type, row) {
+                       return '<a  data-toggle="tooltip" data-placement="top" title="' + row["name"] + '" target="_Blank" href="/article/' + row["id"] + '">' + row["name"] + '</a>';
+                   },
+                   "targets": 1
+               }
+               /*,
+               {
+                   "render": function (data, type, row) {
+                       return formatDate(parseInt(row["createTime"]));
+                   },
+                   "targets": 4
+               }
+               ,
+               {
+                   "render": function (data, type, row) {
+                       return formatDate(parseInt(row["updateTime"]));
+                   },
+                   "targets": 5
+               }*/
+               // ,
+               // {
+               //     width: "200px",
+               //     "targets": 2
+               // }
+           ]
+
+       });
+       /*cjUserTalble设置--设置默认排序规则*/
+       cjArticleTableInstance.order([4, 'desc']).draw();
+
+       //启用tooltip提示冒泡插件
+       $('[data-toggle="tooltip"]').tooltip();
+
+       /*jUserTalble设置--设置索引列*/
+       // cjArticleTableInstance.on('order.dt search.dt', function () {
+       //     cjArticleTableInstance.column(0, {
+       //         search: 'applied',
+       //         order: 'applied'
+       //     }).nodes().each(function (cell, i) {
+       //         cell.innerHTML = i + 1;
+       //     });
+       // }).draw();
+   };
     function cjGetDataTables(categoryId) {
         /*
         * 初始化article table
@@ -272,6 +439,21 @@
         var cjLanguageUrl = "/cjThirdStatic/datatables/cjLanguage.json";
         /*cjUserTalble初始化*/
         cjArticleTableInstance = $('#cjArticleTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'colvisGroup',
+                    text: 'Hide Desc',
+                    hide: [3,4,5]
+                },
+                {
+                    extend: 'colvisGroup',
+                    text: 'Show all',
+                    hide: [0],
+                    show: [1,2,3,4,5]
+                }
+            ],
+            stateSave: true,
             "scrollY": "490px",//设置纵向高度
             "scrollCollapse": true,//超过设置高度后，折叠
             // flexibleWidth: false,
@@ -281,9 +463,45 @@
             "language": {
                 "url": cjLanguageUrl
             },
-            "ajax": {
-                url: '/article/list/' + categoryId,
-                dataSrc: 'data'
+            serverSide: true,
+            // "ajax": {
+            //     url: '/article/list/' + categoryId,
+            //     dataSrc: 'data'
+            // },
+            ajax: function (data, callback, settings) {
+                //封装请求参数
+                var cjAjaxparam = {};
+                cjAjaxparam.draw = data.draw;
+                cjAjaxparam.limit = data.length;//页面显示记录条数，在页面显示每页显示多少项的时候
+                cjAjaxparam.start = data.start;//开始的记录序号
+                cjAjaxparam.page = (data.start / data.length)+1;//当前页码
+                //cjAjaxparam.order = data.order[0];
+                cjAjaxparam.searchValue = data.search.value;
+                $.ajax({
+                    type: "post",
+                    url: '/article/list/' + categoryId,
+                    cache: false,  //禁用缓存
+                    contentType: "application/json",
+                    data: JSON.stringify(cjAjaxparam),  //传入组装的参数
+                    dataType: "json",
+                    success: function (resultData) {
+                        var result = resultData.data;
+                        console.log("cjDataTables returned data: ",result);
+                        //setTimeout仅为测试延迟效果
+                        setTimeout(function () {
+                            //封装返回数据
+                            var returnData = {};
+                            returnData.draw = result.draw;//这里直接自行返回了draw计数器,应该由后台返回
+                            returnData.recordsTotal = result.total;//返回数据全部记录
+                            returnData.recordsFiltered = result.total;//后台不实现过滤功能，每次查询均视作全部结果
+                            returnData.data = result.data;//返回的数据列表
+                            //console.log(returnData);
+                            //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
+                            //此时的数据需确保正确无误，异常判断应在执行此回调前自行处理完毕
+                            callback(returnData);
+                        }, 200);
+                    }
+                });
             },
             /*添加select插件--单选*/
             select: {
@@ -294,6 +512,7 @@
                 // {data: null},//问题： 只能这样？？？？
                 {data: 'id'},
                 {data: 'name'},
+                {data: 'articleState'},
                 {data: 'articleDesc'},
                 {data: 'createTime'},
                 {data: 'updateTime'}
@@ -323,13 +542,20 @@
                     },
                     "targets": 1
                 }
-                ,
+                /*,
                 {
                     "render": function (data, type, row) {
                         return formatDate(parseInt(row["createTime"]));
                     },
-                    "targets": [3, 4]
+                    "targets": 4
                 }
+                ,
+                {
+                    "render": function (data, type, row) {
+                        return formatDate(parseInt(row["updateTime"]));
+                    },
+                    "targets": 5
+                }*/
                 // ,
                 // {
                 //     width: "200px",
@@ -338,8 +564,7 @@
             ]
 
         });
-        /*cjUserTalble设置--设置默认排序规则*/
-        cjArticleTableInstance.order([4, 'desc']).draw();
+
 
         //启用tooltip提示冒泡插件
         $('[data-toggle="tooltip"]').tooltip();
@@ -437,7 +662,7 @@
             },
             error: function () {
                 alert("move ztreeNode 失败,请联系管理员");
-                cjzTreeBeforeDropFalg=false;
+                cjzTreeBeforeDropFalg = false;
             }
         });
         return cjzTreeBeforeDropFalg;
@@ -462,6 +687,8 @@
     // }
     function cjzTreeonClick(event, treeId, treeNode) {//单机分类，右侧展示分类下的文章
         cjArticleTableInstance.destroy();
+        //清楚dataTables保存的状态
+        cjArticleTableInstance.state.clear();
         cjGetDataTables(treeNode.id);
         var cjClickParentNode = treeNode;
         var cjClickNodePath = treeNode.name;
@@ -498,6 +725,9 @@
         $("#cjCategoryAddPid").val(cjAddCategorySelectedNode.id);
         $("#cjCategoryAddModal").modal({});
     });
+   $('#cjCategoryAddModal').on('shown.bs.modal',function(e){     //模态框的ID
+       $('#cjCategoryAddName').focus(); //通过ID找到对应输入框，让其获得焦点
+   });
     $("#cjCategoryAdd_subbtn").on("click", function () {
         var cjCategoryAddData = {
             "pid": $("#cjCategoryAddPid").val(),
@@ -624,7 +854,7 @@
 
     $(document).ready(function () {
         /*始化data tables*/
-        cjGetDataTables(1);
+        cjInitDataTables();
         /*
        * 初始化zTree
        * */

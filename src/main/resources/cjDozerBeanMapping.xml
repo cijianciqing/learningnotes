@@ -5,7 +5,7 @@
 
 
 
-    <!--从user到viewUser-->
+    <!--  CJArticleCategory To CJViewArticleCategory -->
     <mapping>
         <class-a>nanshan.cj.learningnotes.entity.CJArticleCategory</class-a>
         <class-b>nanshan.cj.learningnotes.dao.dto.CJViewArticleCategory</class-b>
@@ -15,6 +15,7 @@
         </field>
     </mapping>
 
+    <!--  CJArticle To CJViewArticle -->
     <mapping>
         <class-a>nanshan.cj.learningnotes.entity.CJArticle</class-a>
         <class-b>nanshan.cj.learningnotes.dao.dto.CJViewArticle</class-b>
@@ -22,16 +23,12 @@
             <a>category.id</a>
             <b>categoryId</b>
         </field>
+        <field>
+            <a>cjArticleState</a>
+            <b>articleState</b>
+        </field>
     </mapping>
 
-<!--    <mapping>-->
-<!--        <class-a>nanshan.cj.learningnotes.dao.dto.CJViewArticle</class-a>-->
-<!--        <class-b>nanshan.cj.learningnotes.entity.CJArticle</class-b>-->
-<!--        <field>-->
-<!--            <a>categoryId</a>-->
-<!--            <b>category.id</b>-->
-<!--        </field>-->
-<!--    </mapping>-->
 
 
 </mappings>

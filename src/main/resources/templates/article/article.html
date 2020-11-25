@@ -20,7 +20,6 @@
         <!--    <div class="p-3 mb-2 bg-info text-white"> </div>-->
     </div>
 </div>
-<!--以下为创建和更新页面 create / update-->
 
 <div class="card shadow mb-4">
     <!--  <div class="card-header">
@@ -31,18 +30,38 @@
             <input type="hidden" name="cjArticleCategoryId" class="form-control"
                    th:value="${cjArticleObject.categoryId}"
                    id="cjArticleCategoryId">
+            <input type="hidden" name="cjArticleSS" class="form-control"
+                   th:value="${cjArticleObject.articleState}"
+                   id="cjArticleSS">
             <input type="hidden" name="cjArticleId" class="form-control" th:value="${cjArticleObject.id}"
                    id="cjArticleId">
 
             <div class="form-group row">
                 <label class="col-sm-2 control-label text-center">
-                    <button class="btn btn-primary" type="button">
+                    <button class="btn btn-primary" id="cjBiaoTiButton" type="button">
                         标题
                     </button>
                 </label>
                 <div class="col-sm-10">
                     <input type="text" name="cjArticleAddName" class="form-control" id="cjArticleAddName"
                            th:value="${cjArticleObject.name}">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 control-label text-center">
+                    <button class="btn btn-primary" type="button">
+                        状态
+                    </button>
+                </label>
+                <div class="col-sm-10">
+                    <select name="roles" id="cjArticleAddStateSelect" class="selectpicker"
+                            title="Choose article state" >
+                        <option value="start">开始</option>
+                        <option value="improve">待完善</option>
+                        <option value="verify">待验证</option>
+                        <option value="finish">完成</option>
+                    </select>
                     <span class="help-block"></span>
                 </div>
             </div>
@@ -87,6 +106,24 @@
 
 <th:block th:replace="~{fragment/fragment :: cjLearning_js}"/>
 <script>
+    function cjAjaxReturn(result,cjparam){
+            console.log(result);
+            if(result.code==1){
+                bootbox.alert(cjparam+" success", function(){
+                    window.self.close();
+                });
+
+            }else{
+                bootbox.alert({
+                    // message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i> Please wait while we do something...</p>',
+                    message: '<p class="text-center text-danger font-weight-bold">\n' +
+                        result.cjExceptionHandlerMessage.cjMessage.data.cjErrorField +
+                        '</p>',
+                    size: 'small',
+                    backdrop: true,
+                });
+            }
+    }
     var cjzTreeObj;
     // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
     var setting = {
@@ -131,8 +168,14 @@
         }
     };
 
+    $("#cjBiaoTiButton").on("click",function () {
+    })
 
     $(function () {
+
+        //初始化select
+        $('#cjArticleAddStateSelect').selectpicker();
+        $('.selectpicker').selectpicker('val', $("#cjArticleSS").val());
         //初始化ckeditor
         cjCKEditor01 = CKEDITOR.replace($("#cjArticleAddContent")[0], {
             width: '100%',
@@ -150,30 +193,33 @@
                     "name": $("#cjArticleAddName").val(),
                     "articleDesc": $("#cjArticleAddDesc").val(),
                     "content": CKEDITOR.instances.cjArticleAddContent.getData(),
-                    "categoryId": $("#cjArticleCategoryId").val()
+                    "categoryId": $("#cjArticleCategoryId").val(),
+                    "articleState": $('#cjArticleAddStateSelect').val()
                 };
-
-                $.ajax({
+                // console.log(cjUpdateData);
+                $.ajax({//更新
                     url: "/article",
                     method: "put",
                     dataType: "json",
                     contentType: "application/json",
                     data: JSON.stringify(cjUpdateData),
-                    success: function (result) {
-                        alert("updateArticle success");
-                        window.self.close();
+                    success: function(result){
+                        cjAjaxReturn(result,"updateArticle");
                     },
                     error: function () {
-                        alert("updateArticle 失败,清理管理员");
+                        alert("updateArticle 失败,请理管理员");
                     }
                 });
-            } else {
+            } else {//创建
                 var cjAddData = {
                     "name": $("#cjArticleAddName").val(),
                     "articleDesc": $("#cjArticleAddDesc").val(),
                     "content": CKEDITOR.instances.cjArticleAddContent.getData(),
-                    "categoryId": $("#cjArticleCategoryId").val()
+                    "categoryId": $("#cjArticleCategoryId").val(),
+                    "articleState": $('#cjArticleAddStateSelect').val()
                 };
+
+                // console.log(cjAddData);
 
                 $.ajax({
                     url: "/article",
@@ -181,12 +227,11 @@
                     dataType: "json",
                     contentType: "application/json",
                     data: JSON.stringify(cjAddData),
-                    success: function (result) {
-                        alert("createArticle success");
-                        window.self.close();
+                    success:  function(result){
+                        cjAjaxReturn(result,"createArticle");
                     },
                     error: function () {
-                        alert("createArticle 失败,清理管理员");
+                        bootbox.alert("createArticle 失败,请理管理员!");
                     }
                 });
             }
@@ -226,7 +271,7 @@
     /*当显示分类时触发事件*/
     $('#collapseExample').on('show.bs.collapse', function () {
         var cjSelectNodes = cjzTreeObj.getNodesByParam("id", $("#cjArticleCategoryId").val(), null);
-        if(cjSelectNodes.length>0){
+        if (cjSelectNodes.length > 0) {
             //console.log(cjSelectNodes[0]);
             cjzTreeObj.selectNode(cjSelectNodes[0]);
         }
@@ -234,8 +279,8 @@
 
     function cjzTreeonClick(event, treeId, treeNode) {//单机分类，右侧展示分类下的文章
         $("#cjArticleCategoryId").val(treeNode.id);
-        console.log( "新选中的分类Id: "+ $("#cjArticleCategoryId").val());
-        };
+        console.log("新选中的分类Id: " + $("#cjArticleCategoryId").val());
+    };
 </script>
 </body>
 

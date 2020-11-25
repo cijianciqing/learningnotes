@@ -1,11 +1,11 @@
 package nanshan.cj.learningnotes.controller;
 
+import cn.com.ns.cj.cjuniversalspringbootstarter.returnData.CJRDataUtil;
+import cn.com.ns.cj.cjuniversalspringbootstarter.returnData.CJReturnedData;
 import lombok.extern.slf4j.Slf4j;
 import nanshan.cj.learningnotes.dao.dto.CJViewArticle;
 import nanshan.cj.learningnotes.dao.dto.CJViewArticleCategory;
 import nanshan.cj.learningnotes.service.CJArticleCategoryService;
-import nanshan.cj.learningnotes.utils.returnData.CJRDataUtil;
-import nanshan.cj.learningnotes.utils.returnData.CJReturnedData;
 import nanshan.cj.learningnotes.ztree.bean.CJZTreeNodeMove;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

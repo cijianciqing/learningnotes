@@ -1,10 +1,10 @@
 package nanshan.cj.learningnotes.service;
 
+import cn.com.ns.cj.cjuniversalspringbootstarter.dozer.CJDozerUtil;
 import lombok.extern.slf4j.Slf4j;
 import nanshan.cj.learningnotes.dao.CJArticleCategoryDao;
 import nanshan.cj.learningnotes.dao.dto.CJViewArticleCategory;
 import nanshan.cj.learningnotes.entity.CJArticleCategory;
-import nanshan.cj.learningnotes.utils.dozer.CJDozerUtil;
 import nanshan.cj.learningnotes.ztree.bean.CJZTreeNodeMove;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +111,7 @@ public class CJArticleCategoryService {
 
     public void nodeMove(CJZTreeNodeMove cjzTreeNodeMove) {
 
-        log.info(cjzTreeNodeMove.toString());
+//        log.info(cjzTreeNodeMove.toString());
         String moveType = cjzTreeNodeMove.getMoveType();
         Long treeNodeId = cjzTreeNodeMove.getTreeNodeId();
         Long targetId = cjzTreeNodeMove.getTargetId();
@@ -202,16 +202,20 @@ public class CJArticleCategoryService {
     }
     @Transactional
     public void moveNodeInner(Long treeNodeId, Long targetId) {//targetId为父类Id
-        log.info(treeNodeId.toString()+"--inner->"+targetId.toString());
+//        log.info(treeNodeId.toString()+"--inner->"+targetId.toString());
         //1.获取source
         CJArticleCategory sourceNode = cjArticleCategoryDao.getOne(treeNodeId);
+//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++");
+//        log.info(sourceNode.toString());
         //2.获取target
         CJArticleCategory targetNode = cjArticleCategoryDao.getOne(targetId);
 
         //3.treeNode的序号设置为：子类最大的sortNo+1
-        sourceNode.setParent(targetNode.getParent());
+        sourceNode.setParent(targetNode);
         int cjDestNo = getTheMaxSortNo(targetId);
         sourceNode.setSortNo(cjDestNo+1);
+//        log.info(sourceNode.toString());
+//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++");
         //4.target及之后的node+1
         cjArticleCategoryDao.save(sourceNode);
 
