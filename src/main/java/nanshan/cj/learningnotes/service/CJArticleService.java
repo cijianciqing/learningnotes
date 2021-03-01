@@ -20,6 +20,7 @@ import org.w3c.dom.ls.LSOutput;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,14 +42,22 @@ public class CJArticleService {
     public CJDataTablesReturnData getArticlesBycategoryId(Long categoryId, CJArticleSearchUtilBean searchBean){
         log.info("getArticlesBycategoryId :"+searchBean.toString());
         List<CJArticle> articles = new ArrayList<>();
+
         //获取所有的category
-        Set<Long> allChildren = cjArticleCategoryService.getAllChildren(categoryId);
+        Set<Long> allChildren = new HashSet<>();
+
+        String searchArea = searchBean.getSearchArea();
+        if(searchArea.equalsIgnoreCase("cjDir02")){//包含子Dir
+            //获取所有的category
+            allChildren = cjArticleCategoryService.getAllChildren(categoryId);
+        }
         allChildren.add(categoryId);
 
         //page num从0开始
         Pageable pageable =  PageRequest.of(searchBean.getPage()-1,searchBean.getLimit());
 
 
+        Set<Long> finalAllChildren = allChildren;
         Specification<CJArticle> specification = (Specification<CJArticle>) (root, query, criteriaBuilder) -> {
             Path<Object> name = root.get("name");
             Path<Object> articleDesc = root.get("articleDesc");
@@ -56,7 +65,7 @@ public class CJArticleService {
 
             //category的in查询
             CriteriaBuilder.In<Object> categoryCriteria = criteriaBuilder.in(category);
-            for (Long allChild : allChildren) {
+            for (Long allChild : finalAllChildren) {
                 CriteriaBuilder.In<Object> value = categoryCriteria.value(allChild);
             }
             Predicate cjCriteria = criteriaBuilder.and(categoryCriteria);

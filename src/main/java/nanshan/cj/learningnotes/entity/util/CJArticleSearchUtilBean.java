@@ -14,4 +14,5 @@ public class CJArticleSearchUtilBean {
     private Integer start;
     private Integer page;
     private String searchValue;
+    private String searchArea;
 }

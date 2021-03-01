@@ -37,12 +37,10 @@ public class CJArticlController {
     @PostMapping(value = "/list/{categoryId}")
     public CJReturnedData getAllCategory(@PathVariable(value = "categoryId",required = false) Long id
             , @RequestBody @Valid CJArticleSearchUtilBean cjArticleSearchUtilBean){
-       /* Long cjCategoryId = 1L;
-        if( StringUtils.isNotEmpty(id)){
-            cjCategoryId = Long.parseLong(id);
-        }*/
+
 //        log.info(cjArticleSearchUtilBean.toString());
         CJDataTablesReturnData articlesBycategoryId = cjArticleService.getArticlesBycategoryId(id, cjArticleSearchUtilBean);
+
         return  CJRDataUtil.success(articlesBycategoryId);
     }
 

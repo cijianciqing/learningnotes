@@ -211,7 +211,17 @@
                             <!--                        <button class='btn btn-info btn-sm ml-2' id="cjzTreeShowNode_btn"><i-->
                             <!--                                class='fas fa-info-circle mr-2'></i>查看分类详细信息-->
                             <!--                        </button>-->
+
                         </div>
+                        <div class="btn-group" data-toggle="buttons" id="cjDirOptions">
+                            <label class="btn btn-secondary active">
+                                <input type="radio" value="cjDir01" name="options" id="cjDirOption01" autocomplete="off" checked>当前Dir
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" value="cjDir02" name="options" id="cjDirOption02" autocomplete="off"> 包含子Dir
+                            </label>
+                        </div>
+
                         <div class="alert-primary"></div>
                     </div>
                 </div>
@@ -329,6 +339,7 @@
                cjAjaxparam.page = (data.start / data.length)+1;//当前页码
                //cjAjaxparam.order = data.order[0];
                cjAjaxparam.searchValue = data.search.value;
+               cjAjaxparam.searchArea = $('#cjDirOptions label.active').find('input').val();
                $.ajax({
                    type: "post",
                    url: '/article/list/' + 1,
@@ -338,7 +349,7 @@
                    dataType: "json",
                    success: function (resultData) {
                        var result = resultData.data;
-                       console.log("cjDataTables returned data: ",result);
+                       //console.log("cjDataTables returned data: ",result);
                        //setTimeout仅为测试延迟效果
                        setTimeout(function () {
                            //封装返回数据
@@ -477,6 +488,7 @@
                 cjAjaxparam.page = (data.start / data.length)+1;//当前页码
                 //cjAjaxparam.order = data.order[0];
                 cjAjaxparam.searchValue = data.search.value;
+                cjAjaxparam.searchArea = $('#cjDirOptions label.active').find('input').val();
                 $.ajax({
                     type: "post",
                     url: '/article/list/' + categoryId,
@@ -486,7 +498,7 @@
                     dataType: "json",
                     success: function (resultData) {
                         var result = resultData.data;
-                        console.log("cjDataTables returned data: ",result);
+                        //console.log("cjDataTables returned data: ",result);
                         //setTimeout仅为测试延迟效果
                         setTimeout(function () {
                             //封装返回数据
@@ -690,6 +702,8 @@
         //清楚dataTables保存的状态
         cjArticleTableInstance.state.clear();
         cjGetDataTables(treeNode.id);
+
+        //在dataTables上方填写当前的文件夹路径
         var cjClickParentNode = treeNode;
         var cjClickNodePath = treeNode.name;
         //var cjClickParentNode = treeNode.getParentNode();
@@ -852,6 +866,13 @@
     });
 
 
+   $(document).ready(function () {
+       //仅为测试如何获取button的值
+       $("#cjDirOptions").on("click",function () {
+
+          // console.log("cjDirOptions的值为： ", $('#cjDirOptions label.active').find('input').val());
+       })
+   })
     $(document).ready(function () {
         /*始化data tables*/
         cjInitDataTables();
